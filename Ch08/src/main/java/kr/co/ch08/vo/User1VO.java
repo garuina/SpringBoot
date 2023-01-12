@@ -1,4 +1,4 @@
-package kr.co.ch07.vo;
+package kr.co.ch08.vo;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -18,10 +18,10 @@ import lombok.ToString;
 @Entity
 @Table(name = "user1")
 public class User1VO {
-	
 	@Id
 	private String uid;
+	private String pass;
 	private String name;
 	private String hp;
-	private int age;
+	private int age;	
 }

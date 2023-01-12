@@ -1,4 +1,4 @@
-package kr.co.ch07.vo;
+package kr.co.ch08.vo;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,11 +16,11 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "user1")
-public class User1VO {
-	
+@Table(name = "user2")
+public class User2VO {
 	@Id
 	private String uid;
+	private String pass;
 	private String name;
 	private String hp;
 	private int age;

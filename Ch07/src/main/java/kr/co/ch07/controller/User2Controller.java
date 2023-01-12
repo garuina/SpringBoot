@@ -36,6 +36,25 @@ public class User2Controller {
 		return "redirect:/user2/list";
 	}
 	
+	@GetMapping("/user2/modify")
+	public String User2Modify(Model model, String uid) {
+		User2VO user = service.selectUser2(uid);
+		model.addAttribute("user", user);
+		
+		return"/user2/modify";
+	}
 	
+	@PostMapping("/user2/modify")
+	public String User2Modify(User2VO vo) {
+		service.updateUser2(vo);
+		
+		return "redirect:/user2/list";
+	}
+	
+	@GetMapping("/user2/delete")
+	public String delete(String uid) {
+		service.deleteUser2(uid);
+		return "redirect:/user2/list";
+	}
 	
 }

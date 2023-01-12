@@ -2,31 +2,39 @@
 <html xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<meta charset="UTF-8">
-		<title>user2::modify</title>
+		<title>user6::modify</title>
 	</head>
 	<body>
-		<h3>user2 수정</h3>
+		<h3>user6 수정</h3>
 		<a th:href="@{/}">Ch07메인</a>
-		<a th:href="@{/user2/list}">user2 목록</a>
+		<a th:href="@{/user6/list}">user6 목록</a>
 		
-		<form th:action="@{/user2/modify}" method="post">
+		<form th:action="@{/user6/modify}" method="post">
 			<table border="1">
-				<tr>
-					<td>아이디</td>
-					<td><input type="text" name="uid" th:value="${user.uid}" readonly="readonly"></td>
-				</tr>
 				<tr>
 					<td>이름</td>
 					<td><input type="text" name="name" th:value="${user.name}"></td>
 				</tr>
 				<tr>
-					<td>휴대폰</td>
-					<td><input type="text" name="hp" th:value="${user.hp}"></td>
+					<td>성별</td>
+					<td>
+					<input type="radio" name="gender" value="1">남자
+					<input type="radio" name="gender" value="2">여자
+					</td>
 				</tr>
 				<tr>
 					<td>나이</td>
 					<td><input type="number" name="age" th:value="${user.age}"></td>
 				</tr>
+				<tr>
+					<td>주소</td>
+					<td><input type="text" name="addr" th:value="${user.addr}"></td>
+				</tr>
+				<tr>
+					<td>휴대폰</td>
+					<td><input type="text" name="hp" th:value="${user.hp}"></td>
+				</tr>
+				
 				<tr>
 					<td colspan="2" align="right"><input type="submit" value="수정"></td>
 				</tr>
