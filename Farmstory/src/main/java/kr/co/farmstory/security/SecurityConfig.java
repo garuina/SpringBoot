@@ -18,19 +18,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		// 인가(접근권한) 설정
 		http.authorizeRequests().antMatchers("/").permitAll();
-		http.authorizeRequests().antMatchers("/list").hasAnyRole("2", "3", "4", "5");
-		http.authorizeRequests().antMatchers("/write").hasAnyRole("3", "4", "5");
-		http.authorizeRequests().antMatchers("/view").hasAnyRole("3", "4", "5");
-		http.authorizeRequests().antMatchers("/modify").hasAnyRole("3", "4", "5");
+		http.authorizeRequests().antMatchers("/board/list").hasAnyRole("2", "3", "4", "5");
+		http.authorizeRequests().antMatchers("/board/write").hasAnyRole("3", "4", "5");
+		http.authorizeRequests().antMatchers("/board/view").hasAnyRole("3", "4", "5");
+		http.authorizeRequests().antMatchers("/board/modify").hasAnyRole("3", "4", "5");
 
 		// 사이트 위조 방지 설정
 		http.csrf().disable();
 
-		/*
+
 		// 로그인 설정
 		http.formLogin()
 		.loginPage("/user/login")
-		.defaultSuccessUrl("/list")
+		.defaultSuccessUrl("/index")
 		.failureUrl("/user/login?success=100")
 		.usernameParameter("uid")
 		.passwordParameter("pass");
@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		.invalidateHttpSession(true)
 		.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
 		.logoutSuccessUrl("/user/login?success=200");
-		*/
+
 
 	}
 

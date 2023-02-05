@@ -2,9 +2,10 @@
 <th:block th:include="@{board/__${group}__.html}"/>
 <main id="board" class="write">
 
-    <form th:action="@{/write}" method="post" enctype="multipart/form-data">
+    <form th:action="@{/board/write}" method="post" enctype="multipart/form-data">
         <!--/*<input type="hidden" name="uid" th:value="${#authentication.principal.user.uid}"/>*/-->
         <table border="0">
+            <span class="uid" sec:authentication="principal.user.uid"></span>
             <caption>글쓰기</caption>
             <tr>
                 <th>제목</th>

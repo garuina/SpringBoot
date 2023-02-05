@@ -1,267 +1,84 @@
 <th:block th:include="@{_header.html}"/>
-    <meta charset="UTF-8">
-    <title>회원가입</title>    
-   <link rel="stylesheet" th:href="@{/css/style.css}"/>
-   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
-   <script src="http://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-   <script th:src="@{/js/postcode.js}"></script>
-   <script>
-	// 데이터 검증에 사용할 정규표현식
-	let regUid   = /^[a-z]+[a-z0-9]{3,12}$/g;
-	let regName  = /^[가-힣]{2,4}$/;
-	let regNick  = /^[가-힣a-zA-Z0-9]+$/;
-	let regEmail = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
-	let regHp	 = /^\d{3}-\d{3,4}-\d{4}$/;
-	let regPass  = /^.*(?=^.{8,12}$)(?=.*\d)(?=.*[a-zA-Z])(?=.*[!@#$%^&+=]).*$/;
-	
-	// 폼 데이터 검증 결과 상태변수
-	let isUidOk   = false;
-	let isPassOk  = false;
-	let isPassMatch  = false;
-	let isNameOk  = false;
-	let isNickOk  = false;
-	let isEmailOk = false;
-	let isHpOk    = false;
-	let isEmailAuthOk = false;
-	let isEmailAuthCodeOk = false;
-	let receivedCode = 0;
-	
-	
-   $(function(){
-	   
-	   // 아이디 유효성 검증 & 중복체크
-	   $('input[name=uid]').keydown(function(){
-		   isUidOk = false;
-	   });
-	   
-	   // 아이디 중복체크
-	   $('#btnUidCheck').click(function(){
-		   
-			let uid = $('input[name=uid]').val();
-			
-			if(isUidOk){
-				return;
-			}
-			
-			if(!uid.match(regUid)){
-				$('.resultUid').css('color', 'red').text('영문,숫자 4~19자로 해주세요.');
-				return;
-			}
-			
-			$('.resultUid').css('color', 'black').text('...');
-			
-			setTimeout(()=>{
-			$.ajax({
-				url:'/Sboard/user/checkUid',
-				method:'get',
-				data: {"uid": uid},
-				dataType:'json',
-				success:function(data){
-					if(data.result == 0){
-						console.log('here7');
-						isUidOk = true;
-						$('.resultUid').css('color', 'green').text('사용 가능한 아이디 입니다.');
-					}else{
-						console.log('here8');
-						isUidOk = false;
-						$('.resultUid').css('color', 'red').text('이미 사용중인 아이디 입니다.');
-					}
-				}
-			});
-			}, 500);	
-		});
-	   
-	   
-	   // 비밀번호 형식검사 일치여부 확인
-	   $('input[name=pass2]').focusout(function(){
-		   
-		   let pass1 = $('input[name=pass1]').val();
-		   let pass2 = $(this).val();
-		   
-		   if(pass1 == pass2){
-				
-				if(pass2.match(regPass)){
-					isPassOk = true;
-					$('.resultPass').css('color', 'green').text('비밀번호가 일치합니다.');	
-				}else{
-					isPassOk = false;
-					$('.resultPass').css('color', 'red').text('영문, 숫자, 특수문자 조합 8자~12자 설정해 주세요.');
-				}				
-				
-			}else{
-				isPassOk = false;
-				$('.resultPass').css('color', 'red').text('비밀번호가 일치하지 않습니다.');
-			}	
-		   
-	   });
-	   
-		// 이름 유효성 검증
-		$('input[name=name]').focusout(function(){
-			let name = $(this).val();
-			
-			if(!name.match(regName)){
-				isNameOk = false;
-				$('.resultName').css('color', 'red').text('이름은 한글 2자 이상 이어야 합니다.');
-			}else{
-				isNameOk = true;
-				$('.resultName').text('');
-			}
-		});
-			
-		
-		// 별명 유효성 검사 & 중복체크
-		$('input[name=nick]').keydown(function(){
-			isNickOk = false;
-		});
-		
-		$('#btnNickCheck').click(function(){
-			
-			let nick = $('input[name=nick]').val();
-			
-			if(isNickOk){
-				return;
-			}
-			
-			if(!nick.match(regNick)){
-				isNickOk = false;
-				$('.resultNick').css('color', 'red').text('별명이 유효하지 않습니다.');
-				return;
-			}
-			
-			$('.resultNick').css('color', 'black').text('...');
-			
-			setTimeout(()=>{
-			
-			$.ajax({
-				url: '/Sboard/user/checkNick',
-				method: 'GET',
-				data: {"nick":nick},
-				dataType: 'json',
-				success: function(data){
-					if(data.result > 0){
-						$('.resultNick').css('color', 'red').text('이미 사용중인 별명 입니다.');
-					}else{
-						$('.resultNick').css('color', 'green').text('사용 가능한 별명 입니다.');
-					}
-				}
-			});
-			}, 500);
-		});
-		
-		
-		// 이메일 유효성 검사
-		$('input[name=email]').focusout(function(){
-			let email = $(this).val();
-			
-			if(!email.match(regEmail)){
-				isEmailOk = false;
-				$('.resultEmail').css('color', 'red').text('이메일이 유효하지 않습니다.');
-			}else{
-				isEmailOk = true;
-				$('.resultEmail').text('');
-			}			
-		});
-		
-		// 휴대폰 유효성 검사
-		$('input[name=hp]').focusout(function(){
-			let hp = $(this).val();
-			
-			if(!hp.match(regHp)){
-				isHpOk = false;
-				$('.resultHp').css('color', 'red').text('휴대폰이 유효하지 않습니다.');
-			}else{
-				isHpOk = true;
-				$('.resultHp').text('');
-			}
-		});
-	   
-	   
-	   
-	   
-   });
-   
-   
-   
-   </script>
+<main id="user" class="register">
+    <form action="#" method="post">
+        <table border="1">
+            <caption>사이트 이용정보 입력</caption>
+            <tr>
+                <th>아이디</th>
+                <td>
+                    <input type="text" name="uid" placeholder="아이디 입력"/>
+                    <button type="button" id="btnUidCheck"><img th:src="@{/img/chk_id.gif}" alt="중복확인"/></button>
+                    <span class="resultUid"></span>
+                </td>
+            </tr>
+            <tr>
+                <th>비밀번호</th>
+                <td>
+                    <input type="password" name="pass1" placeholder="비밀번호 입력"/>
+                    <span class="resultPass"></span>
+                </td>
+            </tr>
+            <tr>
+                <th>비밀번호 확인</th>
+                <td>
+                    <input type="password" name="pass2" placeholder="비밀번호 입력 확인"/>
+                </td>
+            </tr>
+        </table>
 
+        <table border="1">
+            <caption>개인정보 입력</caption>
+            <tr>
+                <th>이름</th>
+                <td>
+                    <input type="text" name="name" placeholder="이름 입력"/>
+                    <span class="resultName"></span>
+                </td>
+            </tr>
+            <tr>
+                <th>별명</th>
+                <td>
+                    <p>공백없이 한글, 영문, 숫자 입력</p>
+                    <input type="text" name="nick" placeholder="별명 입력"/>
+                    <button type="button"id="btnNickCheck"><img th:src="@{/img/chk_id.gif}" alt="중복확인"/></button>
+                    <span class="resultNick"></span>
+                </td>
+            </tr>
+            <tr>
+                <th>이메일</th>
+                <td>
+                    <input type="email" name="email" placeholder="이메일 입력"/>
+                    <span class="resultEmail"></span>
+                    <button type="button" id="btnEmail"><img th:src="@{/img/chk_auth.gif}" alt="인증번호 받기"/></button>
+                    <div class="auth">
+                        <input type="text" name="auth" placeholder="인증번호 입력"/>
+                        <button type="button" id="btnEmailConfirm"><img th:src="@{/img/chk_confirm.gif}" alt="확인"/></button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <th>휴대폰</th>
+                <td>
+                    <input type="text" name="hp" placeholder="- 포함 13자리 입력"/>
+                    <span class="resultHp"></span>
+                </td>
+            </tr>
+            <tr>
+                <th>주소</th>
+                <td>
+                    <input type="text" name="zip" id="zip" placeholder="우편번호 검색"/>
+                    <button type="button" onclick="postcode()"><img th:src="@{/img/chk_post.gif}" alt="우편번호 찾기"></button>
+                    <input type="text" name="addr1" id="addr1" placeholder="기본주소 검색" readonly/>
+                    <input type="text" name="addr2" id="addr2" placeholder="상세주소 입력"/>
+                </td>
+            </tr>
+        </table>
 
+        <div>
+            <a th:href="@{/user/login}" class="btnCancel">취소</a>
+            <input type="submit" class="btnRegister" value="회원가입"/>
+        </div>
+    </form>
 
-
-        <main id="user" class="register">
-
-            <form th:action="@{/user/register}" method="post">
-                <table border="1">
-                    <caption>사이트 이용정보 입력</caption>
-                    <tr>
-                        <th>아이디</th>
-                        <td>
-                            <input type="text" name="uid" placeholder="아이디 입력"/>
-                            <button type="button" id="btnUidCheck"><img th:src="@{/img/chk_id.gif}" alt="중복확인"/></button>
-                            <span class="resultUid"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>비밀번호</th>
-                        <td>
-                            <input type="password" name="pass1" placeholder="비밀번호 입력"/>
-                            <span class="resultPass"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>비밀번호 확인</th>
-                        <td>
-                            <input type="password" name="pass2" placeholder="비밀번호 입력 확인"/>
-                        </td>
-                    </tr>
-                </table>
-
-                <table border="1">
-                    <caption>개인정보 입력</caption>
-                    <tr>
-                        <th>이름</th>
-                        <td>
-                            <input type="text" name="name" placeholder="이름 입력"/>                        
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>별명</th>
-                        <td>
-                            <p>공백없이 한글, 영문, 숫자 입력</p>
-                            <input type="text" name="nick" placeholder="별명 입력"/>
-                            <button type="button" id="btnNickCheck"><img th:src="@{/img/chk_id.gif}" alt="중복확인"/></button>
-                            <span class="resultNick"></span>
-                        </td>
-                    </tr>                    
-                    <tr>
-                        <th>이메일</th>
-                        <td>
-                            <input type="email" name="email" placeholder="이메일 입력"/>
-                            <span class="resultEmail"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>휴대폰</th>
-                        <td>
-                            <input type="text" name="hp" placeholder="- 포함 13자리 입력"/>
-                            <span class="resultHp"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>주소</th>
-                        <td>
-                            <input type="text" name="zip" placeholder="우편번호 검색" readonly/>
-                            <button type="button" onclick="postcode()"><img th:src="@{/img/chk_post.gif}" alt="우편번호 찾기"/></button>
-                            <input type="text" name="addr1" placeholder="기본주소 검색" readonly/>
-                            <input type="text" name="addr2" placeholder="상세주소 입력"/>
-                        </td>
-                    </tr>
-                </table>
-
-                <div>
-                    <a th:href="@{/user/login}" class="btnCancel">취소</a>
-                    <input type="submit" class="btnRegister" value="회원가입"/>
-                </div>
-            </form>            
-        </main>
-
+</main>
 <th:block th:include="@{_footer.html}"/>
