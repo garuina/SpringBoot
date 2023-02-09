@@ -42,20 +42,42 @@ public class BoardController {
     }
 
     @GetMapping("board/modify")
-    public String modify(Model model, String group, String cate){
-        model.addAttribute("group", group);
+    public String modify(Model model, String group, String cate, int no){
+        
+    	ArticleVO article = service.selectArticle(no);
+    	
+    	model.addAttribute("group", group);
         model.addAttribute("cate", cate);
+        model.addAttribute("article", article);
+        
         return "board/modify";
+    }
+    
+    @PostMapping("board/modify")
+    public String modify(ArticleVO vo, HttpServletRequest req, Model model,String group, String cate) {
+    	String regip = req.getRemoteAddr();
+        vo.setRegip(regip);
+        
+    	service.updateArticle(vo);
+    	
+    	 model.addAttribute("group", group);
+         model.addAttribute("cate", cate);
+    	return "redirect:/board/list?group="+group+"&cate="+cate;
     }
 
     @GetMapping("board/view")
-    public String view(Model model, String group, String cate, int no){
+    public String view(Model model, String group, String cate, int no, int parent){
 
-
+    	// 글 가져오기
         ArticleVO article = service.selectArticle(no);
         model.addAttribute("group", group);
         model.addAttribute("cate", cate);
         model.addAttribute("article", article);
+        
+        // 댓글 가져오기
+        List<ArticleVO> comments = service.selectComments(parent);
+        model.addAttribute("comments", comments);
+        
         return "board/view";
     }
 
@@ -67,16 +89,25 @@ public class BoardController {
     }
 
     @PostMapping("board/write")
-    public String write(ArticleVO vo, HttpServletRequest req, String group, String cate){
+    public String write(ArticleVO vo, HttpServletRequest req, Model model,String group, String cate){
         String regip = req.getRemoteAddr();
         vo.setRegip(regip);
 
-
         service.insertArticle(vo);
-
-        return "redirect:/board/list";
+        
+        model.addAttribute("group", group);
+        model.addAttribute("cate", cate);
+        return "redirect:/board/list?group="+group+"&cate="+cate;
 
     }
-
+    
+    @GetMapping("board/delete")
+    public String delete(String group, String cate,int no) {
+    	
+    	service.deleteArticle(no);
+    	
+    	return "redirect:/board/list?group="+group+"&cate="+cate;
+    }
+    
 
 }

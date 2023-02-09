@@ -44,6 +44,17 @@ public class ArticleService {
 
         return result;
     };
+    
+    public int insertComment(ArticleVO comment) {
+    	
+    	// 댓글등록
+    	int result = dao.insertComment(comment);
+    	
+    	return result;
+    	
+    };
+    
+    
     public ArticleVO selectArticle(int no) {
         return dao.selectArticle(no);
     };
@@ -51,7 +62,10 @@ public class ArticleService {
         return dao.selectArticles(start,cate);
     };
 
-
+    // 댓글 가져오기
+    public List<ArticleVO> selectComments(int parent){
+    	return dao.selectComments(parent);
+    };
 
     public FileVO selectFile(int fno) {
         return dao.selectFile(fno);
