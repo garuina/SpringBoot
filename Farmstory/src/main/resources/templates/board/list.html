@@ -15,9 +15,9 @@
 
         <tr th:each="article,i:${articles}">
             <td>[[${pageStartNum - i.index}]]</td>
-            <td><a th:href="@{/board/view(group=${group},cate=${cate},no=${article.no},parent=${article.parent})}">[[${article.title}]] &#91;[[${article.comment}]]&#93;</a></td>
+            <td><a th:href="@{/board/view(group=${group},cate=${cate},no=${article.no},parent=${article.parent},pg=${currentPage})}">[[${article.title}]] &#91;[[${article.comment}]]&#93;</a></td>
             <td>[[${article.nick}]]</td>
-            <td>[[${article.rdate}]]</td>
+            <td>[[${article.rdate.substring(2, 10)}]]</td>
             <td>[[${article.hit}]]</td>
         </tr>
     </table>

@@ -24,6 +24,9 @@ public class ArticleVO {
     private String rdate;
 
     // additional
+    private String pg;
     private String nick;
     private FileVO fileVO;
+    
+   
 }

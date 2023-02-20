@@ -206,7 +206,7 @@ main > .latest table {
 }
 main > .latest table tr > td > a{
     display: block;
-    width: 140px;
+    width: 148px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

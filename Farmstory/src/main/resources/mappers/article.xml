@@ -76,6 +76,30 @@
         limit #{start},10;
     </select>
 
+	<select id="selectGrowLatests" resultType="kr.co.farmstory.vo.ArticleVO">
+	 SELECT `no`, `title`, `rdate` FROM `board_article` WHERE `cate`='grow' ORDER BY `no` DESC LIMIT 5;
+	</select>
+	
+	<select id="selectSchoolLatests" resultType="kr.co.farmstory.vo.ArticleVO">
+		SELECT `no`, `title`, `rdate` FROM `board_article` WHERE `cate`='school' ORDER BY `no` DESC LIMIT 5;
+	</select>
+	
+	<select id="selectStoryLatests" resultType="kr.co.farmstory.vo.ArticleVO">
+		SELECT `no`, `title`, `rdate` FROM `board_article` WHERE `cate`='story' ORDER BY `no` DESC LIMIT 5;
+	</select>
+
+	<select id="selectNoticeLatests" resultType="kr.co.farmstory.vo.ArticleVO">
+		SELECT `no`, `title`, `rdate` FROM `board_article` WHERE `cate`='notice' ORDER BY `no` DESC LIMIT 5;
+	</select>
+	
+	<select id="selectQnaLatests" resultType="kr.co.farmstory.vo.ArticleVO">
+		SELECT `no`, `title`, `rdate` FROM `board_article` WHERE `cate`='qna' ORDER BY `no` DESC LIMIT 5;
+	</select>
+	
+	<select id="selectFaqLatests" resultType="kr.co.farmstory.vo.ArticleVO">
+		SELECT `no`, `title`, `rdate` FROM `board_article` WHERE `cate`='faq' ORDER BY `no` DESC LIMIT 5;
+	</select>
+
 
     <select id="selectCountTotal" resultType="int">
         SELECT COUNT(`no`) FROM `board_article` where `parent`=0 and `cate`=#{cate};
@@ -89,9 +113,19 @@
        SELECT a.*, b.`nick` FROM `board_article`AS a
         JOIN `board_user` AS b
         on a.uid = b.uid
-        WHERE `parent`!='0' and `parent`=#{parent} ORDER BY `no` asc;
+        WHERE `parent`=#{no} ORDER BY `no` asc;
 
     </select>
+    	
+    <select id="selectCommentLatest" resultType="kr.co.farmstory.vo.ArticleVO">
+		SELECT a.*,b.nick FROM `board_article` AS a
+			JOIN `board_user` AS b USING(`uid`)
+			WHERE `parent`!=0 ORDER BY `no` DESC LIMIT 1;
+	</select>
+    
+    
+    
+    
 
     <update id="updateArticle">
         update `board_article` set `title`=#{title},`content`=#{content},`rdate`=now() where `no`=#{no};
@@ -104,6 +138,17 @@
     <update id="updateFileDownload">
         update `board_file` set `download` = `download` + 1 where `fno`=#{fno};
     </update>
+
+	<update id="updateCommentCountPLS">
+		UPDATE `board_article` SET `comment`=`comment`+1 WHERE `no`=#{parent};
+	</update>
+	<update id="updateCommentCountMNS">
+		UPDATE `board_article` SET `comment`=`comment`-1 WHERE `no`=#{parent};
+	</update>
+	<update id="updateComment">
+		update `board_article` set `content` = #{content}, `rdate`=now() where `no`=#{no}
+	</update>
+
 
     <delete id="deleteArticle">
         delete from `board_article` where `no`=#{no} or `parent`=#{no};

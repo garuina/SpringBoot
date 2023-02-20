@@ -1,5 +1,155 @@
 <th:block th:include="@{_header.html}"/>
 <th:block th:include="@{board/__${group}__.html}"/>
+<script type="text/javascript" charset="UTF-8">
+	$(document).ready(function(){
+		
+		// 댓글 삭제
+		$(document).on('click','.remove',function(e){
+			
+			e.preventDefault();
+			
+			let article = $(this).closest('article');
+			let result = confirm('정말 삭제 하시겠습니까?');
+			
+			if(result){
+				let no = $(this).attr('data-no');
+				let parent = $(this).attr('data-parent');
+				
+				let jsonData = {
+						"no":no,
+						"parent":parent
+				}
+				
+				console.log(jsonData);
+				
+				$.ajax({
+					url:'/Farmstory/board/commentDelete',
+					type:'GET',
+					data: jsonData,
+					dataType: 'json',
+					success: function(data){
+						console.log(data);
+
+						if(data.result>0){
+							alert('댓글 삭제 완료!');
+							article.hide();
+						}
+						
+					}
+					
+				});
+				
+			}
+			
+		});
+		
+		
+		// 댓글 수정
+		
+		$(document).on('click','.modify',function(e){
+			e.preventDefault();
+			
+			let txt = $(this).text();
+			let p = $(this).parent().prev();
+			if(txt=="수정"){
+				// 수정모드
+				$(this).text('수정완료');
+				p.attr('contentEditable',true);
+				p.focus();
+			}else{
+				// 수정완료
+				$(this).text('수정');
+				p.attr('contenEditable', false);
+				
+				let no = $(this).attr('data-no');
+				let content = p.text();
+				
+				let jsonData= {
+						"content":content,
+						"no":no
+				}
+				
+				console.log(jsonData);
+				
+				$.ajax({
+					url:'/Farmstory/board/commentModify',
+					type:'post',
+					data:jsonData,
+					dataType:'json',
+					success:function(data){
+						console.log(data);
+						
+						if(data.result > 0){
+							alert('댓글 수정 완료!');
+						}else{
+						    alert('댓글 수정 실패!');
+						}
+					}
+				
+				});
+				
+			}
+			
+			
+			
+		});
+		
+		
+		// 댓글쓰기
+		$('.commentForm > form').submit(function(e){
+			e.preventDefault();
+
+			let pg 		= $(this).children('input[name=pg]').val();
+			let parent 	= $(this).children('input[name=parent]').val();
+			let uid 	= $(this).children('input[name=uid]').val();
+			let textarea = $(this).children('textarea[name=content]');
+			let content  = textarea.val();
+		
+			let jsonData = {
+					"pg":pg,
+					"parent":parent,
+					"uid":uid,
+					"content":content
+			};
+				
+			console.log(jsonData);
+			
+			$.ajax({
+				
+				url:'/Farmstory/board/commentWrite',
+				method:'POST',
+				data:jsonData,
+				dataType:'json',
+				success:function(data){
+					console.log(data);
+					
+					let article = "<article class='comment'>";
+					article += "<span class='nick'>"+data.comment.nick+"</span>&nbsp;";
+					article += "<span class='date'>"+data.comment.rdate+"</span>";
+					article += "<p class='comment'>"+data.comment.content+"</p>";
+					article += "<div>";
+					article += "<a href='#' class='delete' data-no='"+data.comment.no+"'>삭제</a>&nbsp;";
+					article += "<a href='#' class='modify' data-no='"+data.comment.no+"'>수정</a>";
+					article += "</div>";
+					article += "</article>";
+				
+				$('.commentList > .empty').hide();
+				$('.commentList').append(article);
+				$('textarea[name=content]').val('');
+					
+				}
+				
+			});
+			  
+			
+			
+		});
+		
+	});
+
+
+
+</script>
 <main id="board" class="view">
     <table>
         <caption>글보기</caption>
@@ -29,26 +179,31 @@
     <!-- 댓글목록 -->
     <section class="commentList">
         <h3>댓글목록</h3>
+        <input type="hidden" name="pg" th:value="${pg}"></input>
+        <input type="hidden" name="no" th:value="${article.no}"></input>
         <input type="hidden" name="parent" th:value="${article.parent}"></input>
-        
-        
+       
         <article th:each="comment, i:${comments}">
             <span class="nick">[[${comment.nick}]]</span>
             <span class="date">[[${comment.rdate}]]</span>
             <p class="content">[[${comment.content}]]</p>
             <div>
-                <a href="#" class="remove">삭제</a>
-                <a href="#" class="modify">수정</a>
+                <a href="#" class="remove" th:data-no="${comment.no}" th:data-parent="${comment.parent}">삭제</a>
+                <a href="#" class="modify" th:data-no="${comment.no}">수정</a>
             </div>
         </article>
         
-        <p class="empty">등록된 댓글이 없습니다.</p>
+        <p th:if="${comments.size()==0}"class="empty">등록된 댓글이 없습니다.</p>
     </section>
 
     <!-- 댓글쓰기 -->
     <section class="commentForm">
         <h3>댓글쓰기</h3>
-        <form action="#">
+        <form action="#" method="post">
+			<input type="hidden" name="parent" th:value="${article.no}"></input>       	
+			<input type="hidden" name="uid" th:value="${#authentication.principal.user.uid}"></input>       	
+			<input type="hidden" name="nick" th:value="${#authentication.principal.user.nick}"></input>       	
+        
             <textarea name="content" placeholder="댓글내용 입력"></textarea>
             <div>
                 <a href="#" class="btn btnCancel">취소</a>

@@ -45,12 +45,13 @@ public class ArticleService {
         return result;
     };
     
-    public int insertComment(ArticleVO comment) {
+    public ArticleVO insertComment(ArticleVO vo) {
     	
     	// 댓글등록
-    	int result = dao.insertComment(comment);
+    	dao.insertComment(vo);
+    	dao.updateCommentCountPLS(vo.getParent());
     	
-    	return result;
+    	return dao.selectCommentLatest();
     	
     };
     
@@ -61,10 +62,33 @@ public class ArticleService {
     public List<ArticleVO> selectArticles(int start,String cate) {
         return dao.selectArticles(start,cate);
     };
+    
+    // 최신글 가져오기
+    public List<ArticleVO> selectGrowLatests(){
+    	return dao.selectGrowLatests();
+    }
+    
+    public List<ArticleVO> selectSchoolLatests(){
+    	return dao.selectSchoolLatests();
+    }
+    
+    public List<ArticleVO> selectStoryLatests(){
+    	return dao.selectStoryLatests();
+    }
+    
+    public List<ArticleVO> selectNoticeLatests(){
+    	return dao.selectNoticeLatests();
+    }
+    public List<ArticleVO> selectQnaLatests(){
+    	return dao.selectQnaLatests();
+    }
+    public List<ArticleVO> selectFaqLatests(){
+    	return dao.selectFaqLatests();
+    }
 
     // 댓글 가져오기
-    public List<ArticleVO> selectComments(int parent){
-    	return dao.selectComments(parent);
+    public List<ArticleVO> selectComments(int no){
+    	return dao.selectComments(no);
     };
 
     public FileVO selectFile(int fno) {
@@ -79,9 +103,24 @@ public class ArticleService {
     public void updateArticleHit(int no) {
         dao.updateArticleHit(no);
     };
+    
+    // 댓글 수정
+    public int updateComment(String count, int no) {
+    	 return dao.updateComment(count, no);
+    }
+    
+    // 글 삭제
     public void deleteArticle(int no) {
         dao.deleteArticle(no);
     };
+    
+    // 댓글 삭제
+    public int deleteComment(int no, int parent) {
+    	return dao.deleteComment(no, parent);
+    }
+    
+    
+    
     // 파일 다운로드 //////////////////////////////////////////////////////
     public ResponseEntity<Resource> fileDownload(FileVO vo) throws IOException {
         // String path = new File(uploadPath).getAbsolutePath()+"/"+vo.getNewName();
