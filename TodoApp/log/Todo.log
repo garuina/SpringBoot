@@ -1,0 +1,14 @@
+2023-04-24T11:38:29.396+09:00  INFO 19220 --- [restartedMain] kr.co.todo.TodoAppApplication            : Starting TodoAppApplication using Java 17.0.5 with PID 19220 (C:\Users\java1\Desktop\Workspace\SpringBoot\TodoApp\target\classes started by java1 in C:\Users\java1\Desktop\Workspace\SpringBoot\TodoApp)
+2023-04-24T11:38:29.399+09:00  INFO 19220 --- [restartedMain] kr.co.todo.TodoAppApplication            : No active profile set, falling back to 1 default profile: "default"
+2023-04-24T11:38:29.448+09:00  INFO 19220 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2023-04-24T11:38:29.449+09:00  INFO 19220 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2023-04-24T11:38:30.443+09:00  INFO 19220 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8383 (http)
+2023-04-24T11:38:30.456+09:00  INFO 19220 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2023-04-24T11:38:30.457+09:00  INFO 19220 --- [restartedMain] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.8]
+2023-04-24T11:38:30.520+09:00  INFO 19220 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/Todo]   : Initializing Spring embedded WebApplicationContext
+2023-04-24T11:38:30.520+09:00  INFO 19220 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1071 ms
+2023-04-24T11:38:31.054+09:00  INFO 19220 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2023-04-24T11:38:31.089+09:00  INFO 19220 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8383 (http) with context path '/Todo'
+2023-04-24T11:38:31.099+09:00  INFO 19220 --- [restartedMain] kr.co.todo.TodoAppApplication            : Started TodoAppApplication in 2.057 seconds (process running for 2.718)
+2023-04-24T11:39:49.390+09:00  INFO 19220 --- [RMI TCP Connection(5)-127.0.0.1] inMXBeanRegistrar$SpringApplicationAdmin : Application shutdown requested.
+2023-04-24T11:39:49.402+09:00  INFO 19220 --- [RMI TCP Connection(5)-127.0.0.1] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
